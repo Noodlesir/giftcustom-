@@ -1009,3 +1009,11 @@ input[type="range"]::-moz-range-thumb {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+/* Styling for when a gift type chip is selected */
+.chip-card.active-chip {
+  background-color: var(--primary-color, #6200ee); /* Or your preferred theme color */
+  color: #ffffff;
+  border-color: var(--primary-color, #6200ee);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}

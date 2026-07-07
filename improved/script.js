@@ -400,14 +400,13 @@
     });
   });
 
-  const giftTypeGrid = $('#giftTypeGrid');
-  giftTypeGrid.addEventListener('click', (e) => {
-    const chip = e.target.closest('.chip-card');
-    if (!chip) return;
-    const pressed = chip.getAttribute('aria-pressed') === 'true';
-    chip.setAttribute('aria-pressed', String(!pressed));
-    setFieldError('giftType', '');
-  });
+giftTypeGrid.addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip-card');
+  if (!chip) return;
+  const pressed = chip.getAttribute('aria-pressed') === 'true';
+  chip.setAttribute('aria-pressed', String(!pressed));
+  setFieldError('giftType', '');
+});
 
   $('#btnGenerate').addEventListener('click', () => {
     const selected = $$('.chip-card[aria-pressed="true"]', giftTypeGrid).map(c => c.dataset.gifttype);
@@ -538,11 +537,20 @@
 
     $('#themeSubName').textContent = state.recipientName || 'your recipient';
 
-    setTimeout(() => {
+  setTimeout(() => {
       const themes = generateThemes();
+      
+      // FIX PATCH: Overwrite the low prices with values scaled to state.budget
+      themes.forEach((t, i) => {
+        // Vary the prices slightly per card so they don't look identical 
+        // Card 0 = 95% of budget, Card 1 = 85% of budget, Card 2 = 75% of budget
+        const scaleFactor = 0.95 - (i * 0.10); 
+        t.totalPrice = Math.max(Math.round(state.budget * scaleFactor), 15); // Don't drop below a minimum fallback like $15
+      });
+
       state.themes = themes;
       state.selectedTheme = themes[0];
-
+      
       grid.innerHTML = themes.map((t, i) => `
         <article class="theme-card${i === 0 ? ' is-selected-theme' : ''}" data-index="${i}">
           <div class="theme-card-head">
@@ -707,30 +715,19 @@
   /* Mobile menu toggle                                                   */
   /* ------------------------------------------------------------------ */
   const menuToggle = $('#menuToggle');
-  if (menuToggle) {
-    menuToggle.addEventListener('click', () => {
-      const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
-      menuToggle.setAttribute('aria-expanded', String(!expanded));
-      const progress = $('.progress-trail');
-      if (progress) {
-        progress.style.display = expanded ? 'none' : 'flex';
-        if (!expanded) {
-          progress.style.position = 'absolute';
-          progress.style.top = '100%';
-          progress.style.left = '0';
-          progress.style.right = '0';
-          progress.style.background = 'var(--bg)';
-          progress.style.padding = '16px';
-          progress.style.borderBottom = '1px solid var(--line)';
-          progress.style.zIndex = '99';
-          progress.style.flexDirection = 'column';
-          progress.style.backdropFilter = 'blur(16px)';
-          progress.style.background = 'color-mix(in srgb, var(--bg) 90%, transparent)';
-          document.querySelector('.topbar').style.position = 'relative';
-        }
-      }
-    });
-  }
+  // Replace your existing menuToggle event listener with this:
+if (menuToggle) {
+  menuToggle.addEventListener('click', () => {
+    const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', String(!expanded));
+    
+    const progress = $('.progress-trail');
+    if (progress) {
+      // Toggle an active class name instead of applying deep inline string overrides
+      progress.classList.toggle('is-mobile-open', !expanded);
+    }
+  });
+}
 
   /* ------------------------------------------------------------------ */
   /* Init                                                                 */
