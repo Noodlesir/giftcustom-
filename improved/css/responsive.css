@@ -1,0 +1,181 @@
+/* ==========================================================================
+   GiftCustom — Responsive Design
+   Media queries organized large → small.
+   ========================================================================== */
+
+/* ==========================================================================
+   Ultra-wide (1440px+)
+   ========================================================================== */
+@media (min-width: 1440px) {
+  .app { max-width: 880px; }
+  .hero { padding: 16vh 0 11vh; }
+  .topbar-inner { max-width: 1200px; }
+}
+
+/* ==========================================================================
+   Large screens (1200px+)
+   ========================================================================== */
+@media (min-width: 1200px) {
+  .app { max-width: 820px; }
+  .hero { padding: 14vh 0 10vh; }
+}
+
+/* ==========================================================================
+   Tablet landscape (up to 900px)
+   ========================================================================== */
+@media (max-width: 900px) {
+  .app { padding: 0 20px 70px; }
+  .hero { padding: 10vh 0 6vh; }
+  .hero-title { font-size: clamp(2.3rem, 6vw, 3.4rem); }
+  .feature-strip { gap: 22px; }
+  .topbar-inner { padding: 13px 20px; }
+}
+
+/* ==========================================================================
+   Tablet / small tablet (up to 760px)
+   ========================================================================== */
+@media (max-width: 760px) {
+  /* Topbar */
+  .topbar-inner { padding: 12px 16px; }
+  .wordmark { font-size: 1.18rem; }
+  .progress-trail { display: none; } /* hidden by default, shown when .is-mobile-open */
+  .menu-toggle { display: flex; }
+
+  /* Mobile nav override — show when toggled */
+  .progress-trail.is-mobile-open { display: block; }
+
+  /* App */
+  .app { padding: 0 16px 50px; }
+  .screen-inner { padding-top: 40px; }
+
+  /* Hero */
+  .hero { padding: 8vh 0 5vh; }
+  .hero-title { font-size: clamp(2.1rem, 8vw, 2.9rem); }
+  .hero-tagline { font-size: 1rem; }
+  .hero-meta { gap: 18px; margin-top: 44px; }
+  .meta-divider { height: 34px; }
+  .meta-num { font-size: 1.45rem; }
+
+  /* Feature strip */
+  .feature-strip { gap: 18px; padding-top: 26px; }
+  .feature-item { font-size: 0.84rem; }
+
+  /* Occasion grid: 2 columns */
+  .occasion-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .occasion-card { padding: 18px 14px; }
+
+  /* Gift type chips: 1 column */
+  .chip-grid { grid-template-columns: 1fr; }
+
+  /* Currency */
+  .currency-options { gap: 6px; }
+  .currency-chip { padding: 7px 12px; font-size: 0.78rem; }
+
+  /* Checkout */
+  .checkout-theme-banner { padding: 14px 18px; }
+  .summary { padding: 8px 18px; }
+  .price-summary { padding: 18px 20px; }
+
+  /* Confirm */
+  .confirm-receipt { padding: 18px; }
+
+  /* Surprise */
+  .surprise-message { padding: 36px 28px; }
+}
+
+/* ==========================================================================
+   Mobile (up to 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  /* Hero */
+  .hero { padding: 6vh 0 4vh; }
+  .hero-title { font-size: clamp(1.9rem, 9vw, 2.5rem); }
+  .eyebrow { font-size: 0.7rem; margin-bottom: 16px; }
+  .hero-tagline { font-size: 0.96rem; margin-bottom: 34px; }
+
+  .hero-meta {
+    flex-direction: column; align-items: flex-start;
+    gap: 14px; margin-top: 36px;
+  }
+  .meta-divider { display: none; }
+  .meta-item { flex-direction: row; align-items: center; gap: 10px; }
+
+  /* Feature strip */
+  .feature-strip { flex-direction: column; gap: 14px; }
+
+  /* Screens */
+  .screen-title { font-size: clamp(1.6rem, 7vw, 2.1rem); }
+  .screen-sub { font-size: 0.95rem; margin-bottom: 30px; }
+
+  /* Occasion cards */
+  .occasion-grid { gap: 8px; }
+  .occasion-card { padding: 14px 12px; gap: 8px; }
+  .occasion-icon svg { width: 26px; height: 26px; }
+  .occasion-label { font-size: 0.88rem; }
+  .occasion-desc  { display: none; }
+
+  /* Buttons */
+  .btn { padding: 12px 22px; font-size: 0.9rem; }
+  .btn-large { padding: 14px 28px; font-size: 0.98rem; }
+
+  /* Screen actions: stack vertically */
+  .screen-actions {
+    flex-direction: column-reverse; gap: 10px;
+    align-items: stretch; margin-top: 38px; padding-top: 22px;
+  }
+  .screen-actions .btn { width: 100%; justify-content: center; }
+
+  /* Budget */
+  .budget-row { gap: 12px; }
+  .budget-value { font-size: 1.18rem; min-width: 100px; }
+
+  /* Chips */
+  .chip-card { padding: 14px 15px; }
+
+  /* Theme cards */
+  .theme-card { padding: 20px; }
+  .theme-name { font-size: 1.12rem; }
+
+  /* Currency */
+  .currency-bar { padding: 16px; }
+  .price-summary { padding: 16px; }
+
+  /* Confirm */
+  .confirm-inner { padding-top: 6vh; }
+  .confirm-mark { width: 72px; height: 72px; }
+  .confirm-mark svg { width: 32px; height: 32px; }
+  .confirm-receipt { margin: 4px 0 16px; padding: 16px; }
+
+  /* Surprise */
+  .surprise-message { padding: 28px 20px; }
+  .surprise-title { font-size: 1.6rem; }
+}
+
+/* ==========================================================================
+   Small mobile (up to 360px)
+   ========================================================================== */
+@media (max-width: 360px) {
+  .wordmark { font-size: 1rem; }
+  .hero-title { font-size: 1.7rem; }
+  .occasion-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .occasion-card { padding: 12px 10px; }
+  .currency-chip { padding: 6px 10px; font-size: 0.7rem; }
+  .theme-card { padding: 16px; }
+  .screen-title { font-size: 1.5rem; }
+  .btn { font-size: 0.86rem; }
+}
+
+/* ==========================================================================
+   Hover capabilities check (touch devices)
+   ========================================================================== */
+@media (hover: none) {
+  .occasion-card:hover,
+  .chip-card:hover,
+  .currency-chip:hover,
+  .preset-chip:hover,
+  .theme-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .btn-primary:hover { transform: none; }
+}

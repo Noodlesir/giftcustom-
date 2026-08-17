@@ -1,0 +1,203 @@
+/* ==========================================================================
+   GiftCustom — Occasion Themes
+   Each body[data-occasion="..."] overrides all visual tokens.
+   Theme transitions are animated via the .theme-transitioning class.
+   ========================================================================== */
+
+/* ---- Theme Transition ----------------------------------------------------- */
+body.theme-transitioning {
+  transition:
+    background-color .65s var(--ease),
+    color .4s var(--ease),
+    border-color .4s var(--ease),
+    box-shadow .4s var(--ease) !important;
+}
+
+/* ---- Theme Ripple (JS-created element) ----------------------------------- */
+.theme-ripple {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform-origin: center;
+}
+
+/* ==========================================================================
+   Birthday — lively oranges, yellows, candy pinks
+   ========================================================================== */
+body[data-occasion="birthday"] {
+  --bg:            #FFF7EE;
+  --surface:       #FFFFFF;
+  --surface-2:     #FFEFD9;
+  --ink:           #2E1800;
+  --ink-soft:      #7A4A1A;
+  --line:          #FBE0C2;
+  --accent:        #FF6A4D;
+  --accent-2:      #FFC93C;
+  --accent-ink:    #7A2A12;
+  --glow:          rgba(255, 106, 77, 0.32);
+  --gradient-start: #FF6A4D;
+  --gradient-end:   #FFC93C;
+  --particle-color: 20;
+  --ribbon-color:   #FFC93C;
+  --scrollbar-thumb: #FF6A4D;
+  --selection-bg:    #FF6A4D;
+  --selection-text:  #FFFFFF;
+  --loader-color:    #7A2A12;
+  --shadow-card:     0 1px 2px rgba(122,42,18,.05), 0 10px 30px -12px rgba(122,42,18,.2);
+  --shadow-pop:      0 18px 40px -16px rgba(255,106,77,.35);
+  --shadow-glow:     0 0 40px -8px var(--glow);
+  --speed-bg:       14s;
+  --blob-scale:     1.18;
+  --blob-blur:      60px;
+}
+
+/* ==========================================================================
+   Anniversary — romantic roses, blush, champagne
+   ========================================================================== */
+body[data-occasion="anniversary"] {
+  --bg:            #FDF3F4;
+  --surface:       #FFFFFF;
+  --surface-2:     #FBE4E9;
+  --ink:           #2C0A16;
+  --ink-soft:      #7A3B52;
+  --line:          #F2D8DF;
+  --accent:        #B23A63;
+  --accent-2:      #F2C6D2;
+  --accent-ink:    #5C1B33;
+  --glow:          rgba(178, 58, 99, 0.3);
+  --gradient-start: #B23A63;
+  --gradient-end:   #F2C6D2;
+  --particle-color: 340;
+  --ribbon-color:   #F2C6D2;
+  --scrollbar-thumb: #B23A63;
+  --selection-bg:    #B23A63;
+  --selection-text:  #FFFFFF;
+  --loader-color:    #5C1B33;
+  --shadow-card:     0 1px 2px rgba(92,27,51,.05), 0 10px 30px -12px rgba(92,27,51,.18);
+  --shadow-pop:      0 18px 40px -16px rgba(178,58,99,.32);
+  --shadow-glow:     0 0 40px -8px var(--glow);
+  --speed-bg:       22s;
+  --blob-scale:     1.05;
+  --blob-blur:      80px;
+}
+
+/* ==========================================================================
+   Festival — marigold gold, deep maroon, warm copper
+   ========================================================================== */
+body[data-occasion="festival"] {
+  --bg:            #FFF8EC;
+  --surface:       #FFFFFF;
+  --surface-2:     #FFE9C2;
+  --ink:           #2D1500;
+  --ink-soft:      #7A4A08;
+  --line:          #F6DFAE;
+  --accent:        #D9790F;
+  --accent-2:      #FFD166;
+  --accent-ink:    #6E3705;
+  --glow:          rgba(217, 121, 15, 0.3);
+  --gradient-start: #D9790F;
+  --gradient-end:   #FFD166;
+  --particle-color: 35;
+  --ribbon-color:   #FFD166;
+  --scrollbar-thumb: #D9790F;
+  --selection-bg:    #D9790F;
+  --selection-text:  #FFFFFF;
+  --loader-color:    #6E3705;
+  --shadow-card:     0 1px 2px rgba(110,55,5,.05), 0 10px 30px -12px rgba(110,55,5,.18);
+  --shadow-pop:      0 18px 40px -16px rgba(217,121,15,.32);
+  --shadow-glow:     0 0 40px -8px var(--glow);
+  --speed-bg:       16s;
+  --blob-scale:     1.12;
+  --blob-blur:      64px;
+}
+
+/* ==========================================================================
+   Sorry — dusty lavender, powder blue, sage grey
+   ========================================================================== */
+body[data-occasion="sorry"] {
+  --bg:            #F3F5FA;
+  --surface:       #FFFFFF;
+  --surface-2:     #E7ECF6;
+  --ink:           #1A2040;
+  --ink-soft:      #5A6A90;
+  --line:          #DCE3F0;
+  --accent:        #6E84B0;
+  --accent-2:      #CFD9EC;
+  --accent-ink:    #2B3550;
+  --glow:          rgba(110, 132, 176, 0.28);
+  --gradient-start: #6E84B0;
+  --gradient-end:   #CFD9EC;
+  --particle-color: 220;
+  --ribbon-color:   #CFD9EC;
+  --scrollbar-thumb: #6E84B0;
+  --selection-bg:    #6E84B0;
+  --selection-text:  #FFFFFF;
+  --loader-color:    #2B3550;
+  --shadow-card:     0 1px 2px rgba(43,53,80,.05), 0 10px 30px -12px rgba(43,53,80,.15);
+  --shadow-pop:      0 18px 40px -16px rgba(110,132,176,.3);
+  --shadow-glow:     0 0 40px -8px var(--glow);
+  --speed-bg:       34s;
+  --blob-scale:     0.86;
+  --blob-blur:      95px;
+}
+
+/* ==========================================================================
+   Congrats — fresh emerald, mint, brushed gold
+   ========================================================================== */
+body[data-occasion="congrats"] {
+  --bg:            #F2FAF5;
+  --surface:       #FFFFFF;
+  --surface-2:     #DEF3E6;
+  --ink:           #082818;
+  --ink-soft:      #2A6A46;
+  --line:          #D3EBDD;
+  --accent:        #239267;
+  --accent-2:      #B9E8CE;
+  --accent-ink:    #0F4A33;
+  --glow:          rgba(35, 146, 103, 0.3);
+  --gradient-start: #239267;
+  --gradient-end:   #B9E8CE;
+  --particle-color: 150;
+  --ribbon-color:   #B9E8CE;
+  --scrollbar-thumb: #239267;
+  --selection-bg:    #239267;
+  --selection-text:  #FFFFFF;
+  --loader-color:    #0F4A33;
+  --shadow-card:     0 1px 2px rgba(15,74,51,.05), 0 10px 30px -12px rgba(15,74,51,.16);
+  --shadow-pop:      0 18px 40px -16px rgba(35,146,103,.3);
+  --shadow-glow:     0 0 40px -8px var(--glow);
+  --speed-bg:       18s;
+  --blob-scale:     1.1;
+  --blob-blur:      68px;
+}
+
+/* ==========================================================================
+   Other — warm plum, cream, soft taupe
+   ========================================================================== */
+body[data-occasion="other"] {
+  --bg:            #F7F4F8;
+  --surface:       #FFFFFF;
+  --surface-2:     #EAE2EE;
+  --ink:           #1C1028;
+  --ink-soft:      #6A5080;
+  --line:          #E5DAEC;
+  --accent:        #6B4E80;
+  --accent-2:      #DCCBE6;
+  --accent-ink:    #34203F;
+  --glow:          rgba(107, 78, 128, 0.28);
+  --gradient-start: #6B4E80;
+  --gradient-end:   #DCCBE6;
+  --particle-color: 280;
+  --ribbon-color:   #DCCBE6;
+  --scrollbar-thumb: #6B4E80;
+  --selection-bg:    #6B4E80;
+  --selection-text:  #FFFFFF;
+  --loader-color:    #34203F;
+  --shadow-card:     0 1px 2px rgba(52,32,63,.05), 0 10px 30px -12px rgba(52,32,63,.16);
+  --shadow-pop:      0 18px 40px -16px rgba(107,78,128,.28);
+  --shadow-glow:     0 0 40px -8px var(--glow);
+  --speed-bg:       24s;
+  --blob-scale:     1;
+  --blob-blur:      78px;
+}

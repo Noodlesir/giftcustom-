@@ -28,6 +28,10 @@
   let currentScreen = 'home';
   let particlesActive = true;
 
+  // Same-origin API base (server serves this frontend and the API together).
+  const API_BASE = '';
+  let lastOrderId = null;
+
   /* ------------------------------------------------------------------ */
   /* Currency Configuration                                              */
   /* ------------------------------------------------------------------ */
@@ -525,7 +529,45 @@ giftTypeGrid.addEventListener('click', (e) => {
     return themes;
   }
 
-  function runThemeGeneration() {
+  function renderThemes(themes) {
+    const loader = $('#themeLoader');
+    const grid = $('#themeGrid');
+    const actions = $('#themeActions');
+
+    state.themes = themes;
+    state.selectedTheme = themes[0];
+
+    grid.innerHTML = themes.map((t, i) => `
+      <article class="theme-card${i === 0 ? ' is-selected-theme' : ''}" data-index="${i}">
+        <div class="theme-card-head">
+          <h3 class="theme-name">${escapeHTML(t.name)}</h3>
+          <span class="theme-tone">${escapeHTML(t.tone)}</span>
+        </div>
+        <p class="theme-concept">${escapeHTML(t.concept)}</p>
+        <div class="theme-row"><strong>Palette</strong><span>${escapeHTML(t.palette)}</span></div>
+        <div class="theme-row"><strong>Suggested</strong><span>${escapeHTML(t.items)}</span></div>
+        <div class="theme-price-tag">${formatPrice(t.totalPrice)}</div>
+        <div class="theme-card-foot">${escapeHTML(t.message)}</div>
+      </article>
+    `).join('');
+
+    // Theme card selection
+    $$('.theme-card', grid).forEach(card => {
+      card.addEventListener('click', () => {
+        $$('.theme-card', grid).forEach(c => c.classList.remove('is-selected-theme'));
+        card.classList.add('is-selected-theme');
+        const idx = parseInt(card.dataset.index);
+        state.selectedTheme = themes[idx];
+      });
+    });
+
+    loader.style.display = 'none';
+    grid.hidden = false;
+    actions.hidden = false;
+    announce(`${themes.length} theme ideas generated.`);
+  }
+
+  async function runThemeGeneration() {
     const loader = $('#themeLoader');
     const grid = $('#themeGrid');
     const actions = $('#themeActions');
@@ -537,49 +579,37 @@ giftTypeGrid.addEventListener('click', (e) => {
 
     $('#themeSubName').textContent = state.recipientName || 'your recipient';
 
-  setTimeout(() => {
+    try {
+      const res = await fetch(`${API_BASE}/api/themes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipientName: state.recipientName,
+          relationship: state.relationship,
+          occasion: state.occasion,
+          notes: state.notes,
+          budget: state.budget,
+          giftTypes: state.giftTypes,
+          currency: state.currency,
+        }),
+      });
+
+      if (!res.ok) throw new Error(`Server responded ${res.status}`);
+      const data = await res.json();
+      if (!Array.isArray(data.themes) || data.themes.length === 0) throw new Error('No themes returned');
+
+      renderThemes(data.themes);
+    } catch (err) {
+      // Backend unreachable or errored — fall back to the local generator so
+      // the flow still works (e.g. offline demo, missing API key on server).
+      console.warn('Theme API failed, using local fallback:', err.message);
       const themes = generateThemes();
-      
-      // FIX PATCH: Overwrite the low prices with values scaled to state.budget
       themes.forEach((t, i) => {
-        // Vary the prices slightly per card so they don't look identical 
-        // Card 0 = 95% of budget, Card 1 = 85% of budget, Card 2 = 75% of budget
-        const scaleFactor = 0.95 - (i * 0.10); 
-        t.totalPrice = Math.max(Math.round(state.budget * scaleFactor), 15); // Don't drop below a minimum fallback like $15
+        const scaleFactor = 0.95 - (i * 0.10);
+        t.totalPrice = Math.max(Math.round(state.budget * scaleFactor), 15);
       });
-
-      state.themes = themes;
-      state.selectedTheme = themes[0];
-      
-      grid.innerHTML = themes.map((t, i) => `
-        <article class="theme-card${i === 0 ? ' is-selected-theme' : ''}" data-index="${i}">
-          <div class="theme-card-head">
-            <h3 class="theme-name">${escapeHTML(t.name)}</h3>
-            <span class="theme-tone">${escapeHTML(t.tone)}</span>
-          </div>
-          <p class="theme-concept">${escapeHTML(t.concept)}</p>
-          <div class="theme-row"><strong>Palette</strong><span>${escapeHTML(t.palette)}</span></div>
-          <div class="theme-row"><strong>Suggested</strong><span>${escapeHTML(t.items)}</span></div>
-          <div class="theme-price-tag">${formatPrice(t.totalPrice)}</div>
-          <div class="theme-card-foot">${escapeHTML(t.message)}</div>
-        </article>
-      `).join('');
-
-      // Theme card selection
-      $$('.theme-card', grid).forEach(card => {
-        card.addEventListener('click', () => {
-          $$('.theme-card', grid).forEach(c => c.classList.remove('is-selected-theme'));
-          card.classList.add('is-selected-theme');
-          const idx = parseInt(card.dataset.index);
-          state.selectedTheme = themes[idx];
-        });
-      });
-
-      loader.style.display = 'none';
-      grid.hidden = false;
-      actions.hidden = false;
-      announce(`${themes.length} theme ideas generated.`);
-    }, 1400);
+      renderThemes(themes);
+    }
   }
 
   function escapeHTML(str) {
@@ -629,13 +659,50 @@ giftTypeGrid.addEventListener('click', (e) => {
     return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
   }
 
-  $('#btnConfirm').addEventListener('click', () => {
+  async function submitOrder() {
+    const payload = {
+      recipientName: state.recipientName,
+      relationship: state.relationship,
+      deliveryAddress: state.deliveryAddress,
+      occasion: state.occasion,
+      notes: state.notes,
+      budget: state.budget,
+      currency: state.currency,
+      giftTypes: state.giftTypes,
+      selectedTheme: state.selectedTheme,
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/api/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`Server responded ${res.status}`);
+      const order = await res.json();
+      return order.orderId;
+    } catch (err) {
+      // Backend unreachable — still let the user complete the flow, with a
+      // locally generated reference id.
+      console.warn('Order API failed, using local order id:', err.message);
+      return `LOCAL-${Date.now().toString(36).toUpperCase()}`;
+    }
+  }
+
+  $('#btnConfirm').addEventListener('click', async () => {
+    const confirmBtn = $('#btnConfirm');
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Confirming…';
+
+    const orderId = await submitOrder();
+    lastOrderId = orderId;
+
     const themeName = state.selectedTheme ? state.selectedTheme.name.toLowerCase() : 'curated';
     $('#confirmDetail').textContent =
       `A ${themeName} gift is being arranged for ${state.recipientName}, delivered to the address you provided.`;
 
     // Build receipt
-    buildReceipt();
+    buildReceipt(orderId);
 
     // Set confetti positions
     $$('.confirm-confetti span').forEach((el, i) => {
@@ -650,10 +717,12 @@ giftTypeGrid.addEventListener('click', (e) => {
       el.style.setProperty('--rot', rot);
     });
 
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = 'Confirm Gift';
     showScreen('confirm', { announceText: 'Gift confirmed and on its way.' });
   });
 
-  function buildReceipt() {
+  function buildReceipt(orderId) {
     const dateEl = $('#receiptDate');
     const bodyEl = $('#receiptBody');
     const totalEl = $('#receiptTotal');
@@ -666,6 +735,7 @@ giftTypeGrid.addEventListener('click', (e) => {
     if (bodyEl) {
       const themeTotal = state.selectedTheme ? state.selectedTheme.totalPrice : state.budget;
       bodyEl.innerHTML = `
+        ${orderId ? `<div class="receipt-row"><span class="receipt-label">Order ID</span><span class="receipt-value">${escapeHTML(orderId)}</span></div>` : ''}
         <div class="receipt-row"><span class="receipt-label">For</span><span class="receipt-value">${escapeHTML(state.recipientName)}</span></div>
         <div class="receipt-row"><span class="receipt-label">Occasion</span><span class="receipt-value">${capitalize(state.occasion)}</span></div>
         <div class="receipt-row"><span class="receipt-label">Theme</span><span class="receipt-value">${state.selectedTheme ? escapeHTML(state.selectedTheme.name) : '—'}</span></div>
@@ -687,6 +757,7 @@ giftTypeGrid.addEventListener('click', (e) => {
       recipientName: '', relationship: '', deliveryAddress: '',
       occasion: '', notes: '', budget: 3000, giftTypes: [], themes: [], selectedTheme: null,
     });
+    lastOrderId = null;
     formRecipient.reset();
     $$('.occasion-card', occasionGrid).forEach(c => c.classList.remove('is-selected'));
     $('#notes').value = '';
